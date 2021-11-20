@@ -36,10 +36,3 @@ services:
       - ./mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     ports:
       - "3310:3306"
-
-#  proxy:
-#    build: ./nginx
-#    ports:
-#      - "8082:80"
-#    depends_on:
-#      - web
