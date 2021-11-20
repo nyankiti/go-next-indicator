@@ -3,23 +3,43 @@ version: '3.9'
 services:
   backend:
     build: .
+    tty: true
+    environment:
+      APP_MODE: local
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: ambassador
+      DB_LOC: Asia%2FTokyo
     ports:
       - "8000:8000" # local's port:docker container's port
     volumes:
       - .:/app
     depends_on:
       - db # 先にdbを起動する必要があるので依存関係にdbを追加
+    links:
+      - db
 
   db:
     platform: linux/x86_64 # M1チップ対応のため追記
-    image: mysql:5.7.22
-    restart: always
+#    image: mysql:5.7.22
+#    restart: always
+    build: ./mysql
     environment:
       MYSQL_DATABASE: ambassador
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: localuser
+      MYSQL_PASSWORD: localpass
+      TZ: Asia/Tokyo
     volumes:
-      - .dbdata:/var/lib/mysql
+      - ./mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     ports:
-      - "33066:3306"
+      - "3310:3306"
+
+#  proxy:
+#    build: ./nginx
+#    ports:
+#      - "8082:80"
+#    depends_on:
+#      - web
