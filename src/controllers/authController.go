@@ -10,6 +10,7 @@ import (
 func Register(c *fiber.Ctx) error {
 	var data map[string]string
 
+	// fiber contextのbodyParserによってdataのポインタにrequest bodyを格納する
 	if err := c.BodyParser(&data); err != nil {
 		return err
 	}
@@ -34,6 +35,36 @@ func Register(c *fiber.Ctx) error {
 
 	database.DB.Create(&user)
 
+
+	return c.JSON(user)
+}
+
+func Login(c *fiber.Ctx) error {
+	var data map[string]string
+
+	if err := c.BodyParser(&data); err != nil {
+		return err
+	}
+
+	var user models.User
+
+	database.DB.Where("email = ?", data["email"]).First(&user)
+
+	// userが見つからない時
+	if user.Id == 0 {
+		c.Status(fiber.StatusBadRequest)
+		return c.JSON(fiber.Map{
+			"message": "Invalid Credentials User",
+		})
+	}
+
+	// passwordが間違っている時
+	if err := bcrypt.CompareHashAndPassword(user.Password, []byte(data["password"])); err != nil {
+		c.Status(fiber.StatusBadRequest)
+		return c.JSON(fiber.Map{
+			"message": "Invalid Credentials Password",
+		})
+	}
 
 	return c.JSON(user)
 }
