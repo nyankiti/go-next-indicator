@@ -2,6 +2,7 @@ package routes
 
 import (
 	"ambassador/src/controllers"
+	"ambassador/src/midddlewares"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -11,5 +12,11 @@ func Setup(app *fiber.App)  {
 
 	admin.Post("register", controllers.Register)
 	admin.Post("login", controllers.Login)
-	admin.Get("user", controllers.User)
+
+	adminAuthenticated := admin.Use(midddlewares.IsAuthenticated)
+
+	adminAuthenticated.Get("user", controllers.User)
+	adminAuthenticated.Post("logout", controllers.Logout)
+	adminAuthenticated.Put("users/info", controllers.UpdateInfo)
+	adminAuthenticated.Put("users/password", controllers.UpdatePassword)
 }
