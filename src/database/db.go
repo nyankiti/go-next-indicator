@@ -32,5 +32,5 @@ func Connect () {
 
 func AutoMigrate(){
 	// 以下のように書くと、gormがUser structを取得し、DBにtableを作成してくれる
-	DB.AutoMigrate(models.User{})
+	DB.AutoMigrate(models.User{}, models.Product{})
 }

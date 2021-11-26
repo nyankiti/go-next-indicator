@@ -9,6 +9,7 @@ import (
 
 func main() {
 	database.Connect()
+	// dbにテーブルを作成するため、migrateを行う
 	database.AutoMigrate()
 
 	app := fiber.New()
