@@ -132,11 +132,14 @@ func UpdateInfo(c *fiber.Ctx) error {
 	id, _ := midddlewares.GetUserId(c)
 
 	user := models.User{
-		Id: id,
 		FirstName: data["first_name"],
 		LastName: data["last_name"],
 		Email: data["email"],
 	}
+
+	// Idは共通化したmodelのプロパティなので、以下のようにUserの定義とは別で追加する必要がある
+	user.Id = id
+
 
 	database.DB.Model(&user).Updates(&user)
 	// Modelの引数に、どのModelを使うかを示すためのものなので、以下のように内容のないmodels.User structを渡しても同様に動作する
@@ -161,9 +164,8 @@ func UpdatePassword(c *fiber.Ctx) error {
 
 	id, _ := midddlewares.GetUserId(c)
 
-	user := models.User{
-		Id: id,
-	}
+	user := models.User{}
+	user.Id = id
 
 	user.SetPassword(data["password"])
 

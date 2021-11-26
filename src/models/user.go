@@ -3,7 +3,7 @@ package models
 import "golang.org/x/crypto/bcrypt"
 
 type User struct {
-	Id           uint `json:"id"`
+	Model
 	FirstName    string `json:"first_name"`
 	LastName     string `json:"last_name"`
 	// gorm:"unique" とすることでStructの定義の段階で値のバリデーションができる
