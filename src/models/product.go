@@ -9,4 +9,3 @@ type Product struct {
 	Image       string  `json:"image"`
 	Price       float64 `json:"price"`
 }
-

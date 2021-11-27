@@ -16,9 +16,9 @@ func main() {
 
 	for i := 0; i < 30; i++ {
 		ambassador := models.Product{
-			Title: faker.Username(),
+			Title:       faker.Username(),
 			Description: faker.Username(),
-			Image: faker.URL(),
+			Image:       faker.URL(),
 			// 10 ~ 100のうち、ランダムの数字を返すため、10を分けて足している
 			Price: float64(rand.Intn(90) + 10),
 		}

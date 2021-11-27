@@ -10,7 +10,7 @@ import (
 
 var DB *gorm.DB
 
-func Connect () {
+func Connect() {
 	var err error
 	dbName := os.Getenv("DB_NAME")
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=true&loc=%s",
@@ -30,7 +30,7 @@ func Connect () {
 
 }
 
-func AutoMigrate(){
+func AutoMigrate() {
 	// 以下のように書くと、gormがUser structを取得し、DBにtableを作成してくれる
-	DB.AutoMigrate(models.User{}, models.Product{})
+	DB.AutoMigrate(models.User{}, models.Product{}, models.Link{}, models.Order{}, models.OrderItem{})
 }

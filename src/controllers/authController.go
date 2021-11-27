@@ -25,8 +25,6 @@ func Register(c *fiber.Ctx) error {
 		})
 	}
 
-
-
 	user := models.User{
 		FirstName:    data["first_name"],
 		LastName:     data["last_name"],
@@ -69,7 +67,7 @@ func Login(c *fiber.Ctx) error {
 
 	payload := jwt.StandardClaims{
 		// Itoa: Integer to ASCII
-		Subject: strconv.Itoa(int(user.Id)),
+		Subject:   strconv.Itoa(int(user.Id)),
 		ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
 	}
 
@@ -83,9 +81,9 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	cookie := fiber.Cookie{
-		Name: "jwt",
-		Value: token,
-		Expires: time.Now().Add(time.Hour*24),
+		Name:     "jwt",
+		Value:    token,
+		Expires:  time.Now().Add(time.Hour * 24),
 		HTTPOnly: true,
 	}
 
@@ -109,9 +107,9 @@ func User(c *fiber.Ctx) error {
 func Logout(c *fiber.Ctx) error {
 	//有効期限切れのcookieで上書きすることでlogoutとする
 	cookie := fiber.Cookie{
-		Name: "jwt",
-		Value: "",
-		Expires: time.Now().Add(-time.Hour),
+		Name:     "jwt",
+		Value:    "",
+		Expires:  time.Now().Add(-time.Hour),
 		HTTPOnly: true,
 	}
 
@@ -133,13 +131,12 @@ func UpdateInfo(c *fiber.Ctx) error {
 
 	user := models.User{
 		FirstName: data["first_name"],
-		LastName: data["last_name"],
-		Email: data["email"],
+		LastName:  data["last_name"],
+		Email:     data["email"],
 	}
 
 	// Idは共通化したmodelのプロパティなので、以下のようにUserの定義とは別で追加する必要がある
 	user.Id = id
-
 
 	database.DB.Model(&user).Updates(&user)
 	// Modelの引数に、どのModelを使うかを示すためのものなので、以下のように内容のないmodels.User structを渡しても同様に動作する

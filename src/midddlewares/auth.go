@@ -9,7 +9,7 @@ import (
 func IsAuthenticated(c *fiber.Ctx) error {
 	cookie := c.Cookies("jwt")
 
-	token, err := jwt.ParseWithClaims(cookie, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error){
+	token, err := jwt.ParseWithClaims(cookie, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte("secret"), nil
 	})
 
@@ -24,12 +24,10 @@ func IsAuthenticated(c *fiber.Ctx) error {
 	return c.Next()
 }
 
-
-
 func GetUserId(c *fiber.Ctx) (uint, error) {
 	// uint 型はunsigned integer の略で、符号を気にする必要のない数字型としてよく使う
 	cookie := c.Cookies("jwt")
-	token, err := jwt.ParseWithClaims(cookie, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error){
+	token, err := jwt.ParseWithClaims(cookie, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte("secret"), nil
 	})
 

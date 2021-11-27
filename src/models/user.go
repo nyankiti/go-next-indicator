@@ -4,13 +4,13 @@ import "golang.org/x/crypto/bcrypt"
 
 type User struct {
 	Model
-	FirstName    string `json:"first_name"`
-	LastName     string `json:"last_name"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
 	// gorm:"unique" とすることでStructの定義の段階で値のバリデーションができる
-	Email        string `json:"email" gorm:"unique"`
+	Email string `json:"email" gorm:"unique"`
 	// Password と IsAmbassadorはjsonとして返す際に含めたくないので - としておく
 	Password     []byte `json:"-"`
-	IsAmbassador bool `json:"-"`
+	IsAmbassador bool   `json:"-"`
 }
 
 func (user *User) SetPassword(password string) {

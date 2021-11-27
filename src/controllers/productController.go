@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func Product (c *fiber.Ctx) error {
+func Product(c *fiber.Ctx) error {
 	var products []models.Product
 
 	database.DB.Find(&products)
@@ -15,7 +15,7 @@ func Product (c *fiber.Ctx) error {
 	return c.JSON(products)
 }
 
-func CreateProducts (c *fiber.Ctx) error {
+func CreateProducts(c *fiber.Ctx) error {
 	var product models.Product
 
 	if err := c.BodyParser(&product); err != nil {
