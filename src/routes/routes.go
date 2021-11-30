@@ -8,11 +8,12 @@ import (
 
 func Setup(app *fiber.App) {
 	api := app.Group("api")
+	//user admin--------------------------------------------------------------
 	admin := api.Group("admin")
-
+	// 認証前エンドポイント
 	admin.Post("register", controllers.Register)
 	admin.Post("login", controllers.Login)
-
+	// 認証後エンドポイント
 	adminAuthenticated := admin.Use(midddlewares.IsAuthenticated)
 
 	adminAuthenticated.Get("user", controllers.User)
@@ -31,4 +32,17 @@ func Setup(app *fiber.App) {
 	adminAuthenticated.Get("users/:id/links", controllers.Link)
 
 	adminAuthenticated.Get("orders", controllers.Orders)
+
+	//ambassador------------------------------------------------------------
+	ambassador := api.Group("ambassador")
+	//認証前エンドポイント
+	ambassador.Post("register", controllers.Register)
+	ambassador.Post("login", controllers.Login)
+	// 認証後エンドポイント
+	ambassadorAuthenticated := ambassador.Use(midddlewares.IsAuthenticated)
+
+	ambassadorAuthenticated.Get("user", controllers.User)
+	ambassadorAuthenticated.Post("logout", controllers.Logout)
+	ambassadorAuthenticated.Put("users/info", controllers.UpdateInfo)
+	ambassadorAuthenticated.Put("users/password", controllers.UpdatePassword)
 }
