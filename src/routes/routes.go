@@ -38,6 +38,8 @@ func Setup(app *fiber.App) {
 	//認証前エンドポイント
 	ambassador.Post("register", controllers.Register)
 	ambassador.Post("login", controllers.Login)
+	ambassador.Get("products/frontend", controllers.ProductsFrontend)
+	ambassador.Get("products/backend", controllers.ProductsBackend)
 	// 認証後エンドポイント
 	ambassadorAuthenticated := ambassador.Use(midddlewares.IsAuthenticated)
 

@@ -11,6 +11,7 @@ func main() {
 	database.Connect()
 	// dbにテーブルを作成するため、migrateを行う
 	database.AutoMigrate()
+	database.SetupRedis()
 
 	app := fiber.New()
 

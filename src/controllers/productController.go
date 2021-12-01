@@ -5,6 +5,7 @@ import (
 	"ambassador/src/models"
 	"github.com/gofiber/fiber/v2"
 	"strconv"
+	"strings"
 )
 
 func Product(c *fiber.Ctx) error {
@@ -70,5 +71,73 @@ func DeleteProduct(c *fiber.Ctx) error {
 	database.DB.Delete(&product)
 
 	return nil
+}
 
+func ProductsFrontend(c *fiber.Ctx) error {
+	var products []models.Product
+	//var ctx = context.Background()
+	//
+	////まずcacheにデータがあるか確認する
+	//result, err := database.Cache.Get(ctx, "products_frontend").Result()
+	//
+	//if err != nil {
+	//	database.DB.Find(&products)
+	//	// redisにcacheを登録する際はbyteデータである必要がある
+	//	bytes, err := json.Marshal(products)
+	//
+	//	if err != nil {
+	//		panic(err)
+	//	}
+	//
+	//	if errKey := database.Cache.Set(ctx, "products_frontend", bytes, 30*time.Minute).Err(); errKey != nil {
+	//		panic(errKey)
+	//	}
+	//}else{
+	//json.Unmarshal([]byte(result), &products)
+	//}
+
+	// 上のredisによるcacheの処理がエラーするので一時的に以下のようにキャッシュなしでやる
+	database.DB.Find(&products)
+	return c.JSON(products)
+}
+
+func ProductsBackend(c *fiber.Ctx) error {
+	var products []models.Product
+	//var ctx = context.Background()
+	//
+	////まずcacheにデータがあるか確認する
+	//result, err := database.Cache.Get(ctx, "products_backend").Result()
+	//
+	//if err != nil {
+	//	database.DB.Find(&products)
+	//	// redisにcacheを登録する際はbyteデータである必要がある
+	//	bytes, err := json.Marshal(products)
+	//
+	//	if err != nil {
+	//		panic(err)
+	//	}
+	//
+	//	database.Cache.Set(ctx, "products_backend", bytes, 30*time.Minute)
+	//}else{
+	//json.Unmarshal([]byte(result), &products)
+	//}
+
+	// 上のredisによるcacheの処理がエラーするので一時的に以下のようにキャッシュなしでやる
+	database.DB.Find(&products)
+
+	var searchedProducts []models.Product
+
+	if s := c.Query("s"); s != "" {
+		lower := strings.ToLower(s)
+		for _, product := range products {
+			// query paramsの値がtitleかdescriptionに含まれている物を返す
+			if strings.Contains(strings.ToLower(product.Title), lower) || strings.Contains(strings.ToLower(product.Description), lower) {
+				searchedProducts = append(searchedProducts, product)
+			}
+		}
+	} else {
+		searchedProducts = products
+	}
+
+	return c.JSON(searchedProducts)
 }

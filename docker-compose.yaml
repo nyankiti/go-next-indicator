@@ -37,3 +37,7 @@ services:
       - ./mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     ports:
       - "3310:3306"
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
