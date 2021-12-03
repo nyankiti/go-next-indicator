@@ -4,6 +4,7 @@ import (
 	"ambassador/src/database"
 	"ambassador/src/models"
 	"github.com/gofiber/fiber/v2"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -139,5 +140,43 @@ func ProductsBackend(c *fiber.Ctx) error {
 		searchedProducts = products
 	}
 
-	return c.JSON(searchedProducts)
+	if sortParam := c.Query("sort"); sortParam != "" {
+		sortLower := strings.ToLower(sortParam)
+		if sortLower == "asc" {
+			// 並び替えはsortを使って以下のように実現する
+			sort.Slice(searchedProducts, func(i, j int) bool {
+				return searchedProducts[i].Price < searchedProducts[j].Price
+			})
+		} else if sortLower == "desc" {
+			sort.Slice(searchedProducts, func(i, j int) bool {
+				return searchedProducts[i].Price > searchedProducts[j].Price
+			})
+		}
+	}
+
+	var total = len(searchedProducts)
+	page, _ := strconv.Atoi(c.Query("page", "1"))
+	// 一つのpageに表示するアイテム数
+	perPage := 9
+
+	var data []models.Product
+
+	// 2ページ目以降でかつ、そのページを全て埋めるProduct数がない時
+	if total <= page*perPage && total >= (page-1)*perPage {
+		data = searchedProducts[(page-1)*perPage : total]
+		// 通常のペジネーション
+	} else if total >= page*perPage {
+		data = searchedProducts[(page-1)*perPage : page*perPage]
+		// データがないのに、大きなページにアクセスされた時など、その他の場合
+	} else {
+		data = []models.Product{}
+	}
+
+	//return c.JSON(data[(page-1)*perPage : page*perPage])
+	return c.JSON(fiber.Map{
+		"data":      data,
+		"total":     total,
+		"page":      page,
+		"last_page": total/perPage + 1,
+	})
 }
