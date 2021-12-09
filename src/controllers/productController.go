@@ -26,6 +26,8 @@ func CreateProducts(c *fiber.Ctx) error {
 
 	database.DB.Create(&product)
 
+	go database.ClearCache("products_frontend", "products_backend")
+
 	return c.JSON(product)
 }
 
@@ -59,6 +61,8 @@ func UpdateProduct(c *fiber.Ctx) error {
 	// Modelの引数に、どのModel(table)を使うかを示すためのものなので、以下のように内容のないmodels.Product structを渡しても同様に動作する
 	//database.DB.Model(models.Product{}).Updates(&product)
 
+	go database.ClearCache("products_frontend", "products_backend")
+
 	return c.JSON(product)
 }
 
@@ -70,6 +74,8 @@ func DeleteProduct(c *fiber.Ctx) error {
 	product.Id = uint(id)
 
 	database.DB.Delete(&product)
+
+	go database.ClearCache("products_frontend", "products_backend")
 
 	return nil
 }
