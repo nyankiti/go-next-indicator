@@ -30,6 +30,10 @@ func (user *User) ComparePassword(password string) error {
 	return bcrypt.CompareHashAndPassword(user.Password, []byte(password))
 }
 
+func (user *User) Name() string {
+	return user.FirstName + " " + user.LastName
+}
+
 // userがadminかambassadorかによって同じ名前で違う結果を返すメソッドを実装したい
 //（ポリモーフィズム）ので、以下のようにAliasesを作る
 
